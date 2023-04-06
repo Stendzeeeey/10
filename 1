@@ -1,0 +1,60 @@
+Напишите программу «Магазин», состоящую из двух списков. В первом будет перечень товаров, который считывается из текстового файла. 
+Второй изначально пуст (это перечень покупок). При клике на одну кнопку товар должен переходить из одного списка в другой. 
+При клике на вторую кнопку – возвращаться (человек передумал покупать). 
+Предусмотрите возможность множественного выбора элементов списка и их перемещения.
+
+from tkinter import *
+
+# Создаем главное окно приложения
+root = Tk()
+
+# Создаем два пустых списка для товаров и покупок
+product_list = []
+cart_list = []
+
+# Читаем перечень товаров из файла и добавляем в список товаров
+with open('products.txt', 'r', encoding='utf-8') as f:
+    for line in f:
+        product_list.append(line.strip())
+
+# Создаем два элемента списка (Listbox) и добавляем в них элементы
+product_listbox = Listbox(root, selectmode=MULTIPLE)
+for product in product_list:
+    product_listbox.insert(END, product)
+
+cart_listbox = Listbox(root, selectmode=MULTIPLE)
+
+# Функция для перемещения выбранных товаров из списка товаров в список покупок
+def add_to_cart():
+    selected_indices = product_listbox.curselection()
+    for index in selected_indices:
+        item = product_listbox.get(index)
+        cart_list.append(item)
+        cart_listbox.insert(END, item)
+    selected_indices = sorted(selected_indices, reverse=True)
+    for index in selected_indices:
+        product_listbox.delete(index)
+
+# Функция для перемещения выбранных товаров из списка покупок в список товаров
+def remove_from_cart():
+    selected_indices = cart_listbox.curselection()
+    for index in selected_indices:
+        item = cart_listbox.get(index)
+        product_list.append(item)
+        product_listbox.insert(END, item)
+    selected_indices = sorted(selected_indices, reverse=True)
+    for index in selected_indices:
+        cart_listbox.delete(index)
+
+# Создаем кнопки для перемещения товаров между списками
+add_button = Button(root, text='Добавить в корзину', command=add_to_cart)
+remove_button = Button(root, text='Удалить из корзины', command=remove_from_cart)
+
+# Размещаем элементы на главном окне
+product_listbox.grid(row=0, column=0, padx=5, pady=5, sticky='ns')
+add_button.grid(row=0, column=1, padx=5, pady=5, sticky='ns')
+cart_listbox.grid(row=0, column=2, padx=5, pady=5, sticky='ns')
+remove_button.grid(row=1, column=1, padx=5, pady=5, sticky='ns')
+
+# Запускаем главный цикл обработки событий
+root.mainloop()
