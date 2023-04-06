@@ -5,26 +5,24 @@
 
 from tkinter import *
 
-# Создаем главное окно приложения
 root = Tk()
 
-# Создаем два пустых списка для товаров и покупок
+# два пустых списка для товаров и покупок
 product_list = []
 cart_list = []
 
-# Читаем перечень товаров из файла и добавляем в список товаров
 with open('products.txt', 'r', encoding='utf-8') as f:
     for line in f:
         product_list.append(line.strip())
 
-# Создаем два элемента списка (Listbox) и добавляем в них элементы
+# списк listbox и добавление м в них элементов
 product_listbox = Listbox(root, selectmode=MULTIPLE)
 for product in product_list:
     product_listbox.insert(END, product)
 
 cart_listbox = Listbox(root, selectmode=MULTIPLE)
 
-# Функция для перемещения выбранных товаров из списка товаров в список покупок
+# перемещения продуктов в список покупок
 def add_to_cart():
     selected_indices = product_listbox.curselection()
     for index in selected_indices:
@@ -35,7 +33,7 @@ def add_to_cart():
     for index in selected_indices:
         product_listbox.delete(index)
 
-# Функция для перемещения выбранных товаров из списка покупок в список товаров
+# перемещение выбранных товаров из списка покупок в продукты
 def remove_from_cart():
     selected_indices = cart_listbox.curselection()
     for index in selected_indices:
@@ -46,15 +44,13 @@ def remove_from_cart():
     for index in selected_indices:
         cart_listbox.delete(index)
 
-# Создаем кнопки для перемещения товаров между списками
+# кнопки для перемещения товаров 
 add_button = Button(root, text='Добавить в корзину', command=add_to_cart)
 remove_button = Button(root, text='Удалить из корзины', command=remove_from_cart)
 
-# Размещаем элементы на главном окне
 product_listbox.grid(row=0, column=0, padx=5, pady=5, sticky='ns')
 add_button.grid(row=0, column=1, padx=5, pady=5, sticky='ns')
 cart_listbox.grid(row=0, column=2, padx=5, pady=5, sticky='ns')
 remove_button.grid(row=1, column=1, padx=5, pady=5, sticky='ns')
 
-# Запускаем главный цикл обработки событий
 root.mainloop()
